@@ -1,0 +1,11 @@
+127.0.0.1 - - [06/Jul/2023:19:47:22 +0700] "GET / HTTP/1.1" 404 751
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:19:47:22 +0700] "GET /Exception_And_ForwardingDat/index.jsp HTTP/1.1" 200 153
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:20:53:16 +0700] "GET /Exception_And_ForwardingData HTTP/1.1" 404 779
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:20:53:20 +0700] "GET /Exception_And_ForwardingData/index.jsp HTTP/1.1" 404 772
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:20:53:27 +0700] "GET /Exception_And_ForwardingDat/index.jsp HTTP/1.1" 200 153
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:20:54:11 +0700] "GET /Exception_And_ForwardingDat/index.jsp HTTP/1.1" 200 153
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:20:54:11 +0700] "GET /favicon.ico HTTP/1.1" 404 762
+127.0.0.1 - - [06/Jul/2023:23:56:00 +0700] "GET / HTTP/1.1" 404 751
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:23:56:01 +0700] "GET /Exception_And_ForwardingData/index.jsp HTTP/1.1" 200 571
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:23:56:01 +0700] "GET /favicon.ico HTTP/1.1" 404 762
+0:0:0:0:0:0:0:1 - - [06/Jul/2023:23:57:29 +0700] "GET /Exception_And_ForwardingData/index.jsp HTTP/1.1" 200 4216
