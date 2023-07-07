@@ -152,7 +152,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="C:\Users\ADMIN\eclipse-workspace\Java_JSP_Servlet\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\ROOT" path="" reloadable="false"/><Context docBase="C:\Users\ADMIN\eclipse-workspace\Java_JSP_Servlet\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Validation_And_ForwardingData" path="/Validation_And_ForwardingData" reloadable="true" source="org.eclipse.jst.jee.server:Validation_And_ForwardingData"/></Host>
+      <Context docBase="C:\Users\ADMIN\eclipse-workspace\Java_JSP_Servlet\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\ROOT" path="" reloadable="false"/><Context docBase="C:\Users\ADMIN\eclipse-workspace\Java_JSP_Servlet\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Validation_And_ForwardingData" path="/Validation_And_ForwardingData" reloadable="true" source="org.eclipse.jst.jee.server:Validation_And_ForwardingData"/><Context docBase="C:\Users\ADMIN\eclipse-workspace\Java_JSP_Servlet\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Regular_Expression" path="/Regular_Expression" reloadable="true" source="org.eclipse.jst.jee.server:Regular_Expression"/></Host>
     </Engine>
   </Service>
 </Server>

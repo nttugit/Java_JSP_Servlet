@@ -3,4 +3,5 @@
   <module moduleId="org.eclipse.jst.jee.server:Validation_And_ForwardingData" serverId="Tomcat v8.5 Server at localhost"/>
   <module moduleId="org.eclipse.jst.jee.server:Exception_And_ForwardingDat" serverId="Tomcat v8.5 Server at localhost"/>
   <module moduleId="org.eclipse.jst.jee.server:Exception_And_ForwardingData" serverId="Tomcat v8.5 Server at localhost"/>
+  <module moduleId="org.eclipse.jst.jee.server:Regular_Expression" serverId="Tomcat v8.5 Server at localhost"/>
 </modules>
