@@ -4,4 +4,16 @@
     <fullyQualifiedTypeName name="java.util.regex.Matcher"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpSession"/>
     <fullyQualifiedTypeName name="javax.servlet.RequestDispatcher"/>
+    <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="java.sql.Date"/>
+    <fullyQualifiedTypeName name="java.util.Map"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="model.Author"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="model.Book"/>
+    <fullyQualifiedTypeName name="model.BookGenre"/>
+    <fullyQualifiedTypeName name="model.Customer"/>
+    <fullyQualifiedTypeName name="model.Order"/>
+    <fullyQualifiedTypeName name="database.DAOInterface"/>
+    <fullyQualifiedTypeName name="model.OrderDetail"/>
 </qualifiedTypeNameHistroy>
