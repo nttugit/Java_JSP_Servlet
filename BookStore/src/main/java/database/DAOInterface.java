@@ -5,15 +5,15 @@ import java.util.ArrayList;
 public interface DAOInterface<T> {
 	public ArrayList<T> selectAll();
 	
-	public ArrayList<T> selectById(T t);
+	public T selectById(String id);
 	
 	public int insert(T t);
 	
 	public int insertAll(ArrayList<T> arr);
 	
-	public int delete(T t);
+	public int deleteById(String id);
 	
-	public int deleteAll(ArrayList<T> arr);
+	public int deleteAll(ArrayList<String> arr);
 	
 	public int update(T t);
 }

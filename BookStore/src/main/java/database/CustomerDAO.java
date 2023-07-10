@@ -13,7 +13,7 @@ public class CustomerDAO implements DAOInterface<Customer> {
 	}
 
 	@Override
-	public ArrayList<Customer> selectById(Customer t) {
+	public Customer selectById(String t) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -31,13 +31,13 @@ public class CustomerDAO implements DAOInterface<Customer> {
 	}
 
 	@Override
-	public int delete(Customer t) {
+	public int deleteById(String id) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int deleteAll(ArrayList<Customer> arr) {
+	public int deleteAll(ArrayList<String> arr) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -13,7 +13,7 @@ public class OrderDAO implements DAOInterface<Order> {
 	}
 
 	@Override
-	public ArrayList<Order> selectById(Order t) {
+	public Order selectById(String t) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -31,13 +31,13 @@ public class OrderDAO implements DAOInterface<Order> {
 	}
 
 	@Override
-	public int delete(Order t) {
+	public int deleteById(String id) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int deleteAll(ArrayList<Order> arr) {
+	public int deleteAll(ArrayList<String> arr) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

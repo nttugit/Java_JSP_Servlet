@@ -2,10 +2,11 @@ package model;
 
 public class Book {
 	private String bookID;
-	private String bookTitle;
+	private String title;
 	private Author author;
 	private int publishedYear;
 	private double wholesalePrice;
+	private double originalPrice;
 	private double retailPrice;
 	private int instockQuantity;
 	private BookGenre genre;
@@ -16,14 +17,14 @@ public class Book {
 		super();
 	}
 
-	public Book(String bookID, String bookTitle, Author author, int publishedYear, double wholesalePrice,
+	public Book(String bookID, String bookTitle, Author author, int publishedYear, double wholesalePrice, double originalPrice,
 			double retailPrice, int instockQuantity, BookGenre genre, String language, String description) {
-		super();
 		this.bookID = bookID;
-		this.bookTitle = bookTitle;
+		this.title = bookTitle;
 		this.author = author;
 		this.publishedYear = publishedYear;
 		this.wholesalePrice = wholesalePrice;
+		this.originalPrice = originalPrice;
 		this.retailPrice = retailPrice;
 		this.instockQuantity = instockQuantity;
 		this.genre = genre;
@@ -40,11 +41,11 @@ public class Book {
 	}
 
 	public String getBookTitle() {
-		return bookTitle;
+		return title;
 	}
 
 	public void setBookTitle(String bookTitle) {
-		this.bookTitle = bookTitle;
+		this.title = bookTitle;
 	}
 
 	public Author getAuthor() {
@@ -111,4 +112,21 @@ public class Book {
 		this.description = description;
 	}
 
+	public double getOriginalPrice() {
+		return originalPrice;
+	}
+
+	public void setOriginalPrice(double originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+
+	@Override
+	public String toString() {
+		return "Book [bookID=" + bookID + ", title=" + title + ", author=" + author + ", publishedYear=" + publishedYear
+				+ ", wholesalePrice=" + wholesalePrice + ", retailPrice=" + retailPrice + ", instockQuantity="
+				+ instockQuantity + ", genre=" + genre + ", language=" + language + ", description=" + description
+				+ "]";
+	}
+
+	
 }
