@@ -152,7 +152,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="Validation_And_ForwardingData" path="/Validation_And_ForwardingData" reloadable="true" source="org.eclipse.jst.jee.server:Validation_And_ForwardingData"/><Context docBase="Regular_Expression" path="/Regular_Expression" reloadable="true" source="org.eclipse.jst.jee.server:Regular_Expression"/><Context docBase="Catch_HTTP_ErrorCode" path="/Catch_HTTP_ErrorCode" reloadable="true" source="org.eclipse.jst.jee.server:Catch_HTTP_ErrorCode"/><Context docBase="Session" path="/Session" reloadable="true" source="org.eclipse.jst.jee.server:Session"/></Host>
+      <Context docBase="Validation_And_ForwardingData" path="/Validation_And_ForwardingData" reloadable="true" source="org.eclipse.jst.jee.server:Validation_And_ForwardingData"/><Context docBase="Regular_Expression" path="/Regular_Expression" reloadable="true" source="org.eclipse.jst.jee.server:Regular_Expression"/><Context docBase="Catch_HTTP_ErrorCode" path="/Catch_HTTP_ErrorCode" reloadable="true" source="org.eclipse.jst.jee.server:Catch_HTTP_ErrorCode"/><Context docBase="Session" path="/Session" reloadable="true" source="org.eclipse.jst.jee.server:Session"/><Context docBase="BookStore" path="/BookStore" reloadable="true" source="org.eclipse.jst.jee.server:BookStore"/></Host>
     </Engine>
   </Service>
 </Server>
