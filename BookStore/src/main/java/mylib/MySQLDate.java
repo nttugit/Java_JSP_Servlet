@@ -21,6 +21,9 @@ public class MySQLDate {
 
 	public Date getDateFrom(String dateString) {
 		Date sqlDate = null;
+		if(dateString == null || dateString == "") {
+			return null;
+		}
 		SimpleDateFormat formatter = new SimpleDateFormat(this.dateFormat);
 		try {
 			// date string -> util date (parse) -> sql date

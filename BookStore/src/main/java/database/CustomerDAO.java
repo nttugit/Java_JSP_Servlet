@@ -1,8 +1,15 @@
 package database;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.Author;
 import model.Customer;
+import mylib.MySQLDate;
 
 public class CustomerDAO implements DAOInterface<Customer> {
 
@@ -20,8 +27,43 @@ public class CustomerDAO implements DAOInterface<Customer> {
 
 	@Override
 	public int insert(Customer t) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+
+		try {
+			// B1
+			Connection connection = JDBCUtil.getConnection();
+
+			// B2
+			String sql = "INSERT INTO customer (customerid,username,password,fullname,sex,dob,phone,email,address,notificationregistration) VALUES(?,?,?,?,?, ?,?,?,?,?)";
+			PreparedStatement st = connection.prepareStatement(sql);
+			st.setString(1, t.getCustomerID());
+			st.setString(2, t.getUsername());
+			st.setString(3, t.getPassword());
+			st.setString(4, t.getFullName());
+			st.setInt(5, t.getSex());
+			MySQLDate mySqlDate = new MySQLDate();
+			st.setDate(6, mySqlDate.getDateFrom(t.getDob()));
+			st.setString(7, t.getPhone());
+			st.setString(8, t.getEmail());
+			st.setString(9, t.getAddress());
+			st.setBoolean(10, t.isRegisteredNotification());
+			
+			// B3
+			result = st.executeUpdate();
+			
+			
+			// B4
+			System.out.println(sql);
+			System.out.println("table customer just updated: " + result + " records");
+
+			// B5
+			JDBCUtil.closeConnection(connection);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 	@Override
@@ -47,5 +89,78 @@ public class CustomerDAO implements DAOInterface<Customer> {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	public boolean isExistedUsername(String username) {
+		boolean result = false;
+		try {
+
+			// B1: Tao ket noi den CSDL
+			Connection connection = JDBCUtil.getConnection();
+
+			// B2: tao doi tuong statement
+			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\"";
+			Statement st = connection.createStatement();
+			System.out.println(st);
+
+			// B3: thuc thi cau lenh SQL
+			ResultSet resultSet = st.executeQuery(sql);
+			// B4: Xu ly du lieu (ResultSet -> your data)
+			while (resultSet.next()) {
+				result =  true;
+				break;
+			}
+
+			// B5: Ngat ket noi
+			JDBCUtil.closeConnection(connection);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return result;
+	}
+	
+	
+//	public Customer selectByUsername(String username) {
+//		Customer customer = null;
+//
+//		try {
+//
+//			// B1: Tao ket noi den CSDL
+//			Connection connection = JDBCUtil.getConnection();
+//
+//			// B2: tao doi tuong statement
+//			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\"";
+//			Statement st = connection.createStatement();
+//			System.out.println(st);
+//
+//			// B3: thuc thi cau lenh SQL
+//			ResultSet resultSet = st.executeQuery(sql);
+//
+//			// B4: Xu ly du lieu (ResultSet -> your data)
+//			while (resultSet.next()) {
+//				String customerID = resultSet.getString("customerid");
+//				String userName = resultSet.getString("username");
+//				String password = resultSet.getString("password");
+//				String fullName = resultSet.getString("fullname");
+//				String sex = resultSet.getString("sex");
+//				String dob = resultSet.getString("dob");
+//				String phone = resultSet.getString("phone");
+//				String email = resultSet.getString("email");
+//				boolean registeredNotification = resultSet.getBoolean("registerednotification");
+//				String address = resultSet.getString("address");
+//
+//				customer = new Customer(
+//						 customerID,  userName,  password,  fullName,  sex,  dob,
+//						 phone,  email,  registeredNotification,  address);
+//				
+//				break;
+//			}
+//
+//			// B5: Ngat ket noi
+//			JDBCUtil.closeConnection(connection);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+//		return customer;
+//	}
 
 }

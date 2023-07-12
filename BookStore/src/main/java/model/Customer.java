@@ -5,23 +5,21 @@ public class Customer {
 	private String username;
 	private String password;
 	private String fullName;
-	private String sex;
+	private int sex; // 1: Nam, 0: Nữ, 2: Khác
 	private String dob;
 	private String phone;
 	private String email;
 	private String address;
-	private String deliveryAddress;
-	private String storeAddress;
+//	private String deliveryAddress;
+//	private String storeAddress;
 	private boolean notificationRegistration;// register for receiving notifications or not
 
 	public Customer() {
 		super();
 	}
 
-	public Customer(String customerID, String username, String password, String fullName, String sex, String dob,
-			String phone, String email, boolean registeredNotification, String address, String deliveryAddress,
-			String storeAddress) {
-		super();
+	public Customer(String customerID, String username, String password, String fullName, int sex, String dob,
+			String phone, String email,  String address, boolean registeredNotification) {
 		this.customerID = customerID;
 		this.username = username;
 		this.password = password;
@@ -32,8 +30,8 @@ public class Customer {
 		this.email = email;
 		this.notificationRegistration = registeredNotification;
 		this.address = address;
-		this.deliveryAddress = deliveryAddress;
-		this.storeAddress = storeAddress;
+//		this.deliveryAddress = deliveryAddress;
+//		this.storeAddress = storeAddress;
 	}
 
 	public String getCustomerID() {
@@ -68,11 +66,11 @@ public class Customer {
 		this.fullName = fullName;
 	}
 
-	public String getSex() {
+	public int getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex) {
+	public void setSex(int sex) {
 		this.sex = sex;
 	}
 
@@ -116,20 +114,29 @@ public class Customer {
 		this.address = address;
 	}
 
-	public String getDeliveryAddress() {
-		return deliveryAddress;
+	@Override
+	public String toString() {
+		return "Customer [customerID=" + customerID + ", username=" + username + ", password=" + password
+				+ ", fullName=" + fullName + ", sex=" + sex + ", dob=" + dob + ", phone=" + phone + ", email=" + email
+				+ ", address=" + address + ", notificationRegistration=" + notificationRegistration + "]";
 	}
 
-	public void setDeliveryAddress(String deliveryAddress) {
-		this.deliveryAddress = deliveryAddress;
-	}
+//	public String getDeliveryAddress() {
+//		return deliveryAddress;
+//	}
+//
+//	public void setDeliveryAddress(String deliveryAddress) {
+//		this.deliveryAddress = deliveryAddress;
+//	}
+//
+//	public String getStoreAddress() {
+//		return storeAddress;
+//	}
+//
+//	public void setStoreAddress(String storeAddress) {
+//		this.storeAddress = storeAddress;
+//	}
 
-	public String getStoreAddress() {
-		return storeAddress;
-	}
-
-	public void setStoreAddress(String storeAddress) {
-		this.storeAddress = storeAddress;
-	}
-
+	
+	
 }

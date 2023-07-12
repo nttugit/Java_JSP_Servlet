@@ -3,11 +3,9 @@
     <fullyQualifiedTypeName name="java.util.regex.Pattern"/>
     <fullyQualifiedTypeName name="java.util.regex.Matcher"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpSession"/>
-    <fullyQualifiedTypeName name="javax.servlet.RequestDispatcher"/>
     <fullyQualifiedTypeName name="java.lang.String"/>
     <fullyQualifiedTypeName name="java.util.Map"/>
     <fullyQualifiedTypeName name="java.util.HashMap"/>
-    <fullyQualifiedTypeName name="model.Customer"/>
     <fullyQualifiedTypeName name="model.Order"/>
     <fullyQualifiedTypeName name="database.DAOInterface"/>
     <fullyQualifiedTypeName name="model.OrderDetail"/>
@@ -21,7 +19,6 @@
     <fullyQualifiedTypeName name="java.util.Date"/>
     <fullyQualifiedTypeName name="java.sql.Date"/>
     <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
-    <fullyQualifiedTypeName name="mylib.MySQLDate"/>
     <fullyQualifiedTypeName name="java.sql.SQLException"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="database.BookDAO"/>
@@ -31,4 +28,9 @@
     <fullyQualifiedTypeName name="database.AuthorDAO"/>
     <fullyQualifiedTypeName name="database.BookGenreDAO"/>
     <fullyQualifiedTypeName name="model.BookGenre"/>
+    <fullyQualifiedTypeName name="model.Customer"/>
+    <fullyQualifiedTypeName name="javax.servlet.RequestDispatcher"/>
+    <fullyQualifiedTypeName name="database.CustomerDAO"/>
+    <fullyQualifiedTypeName name="java.util.UUID"/>
+    <fullyQualifiedTypeName name="mylib.MySQLDate"/>
 </qualifiedTypeNameHistroy>
