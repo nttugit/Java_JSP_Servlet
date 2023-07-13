@@ -23,14 +23,14 @@
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
     <fullyQualifiedTypeName name="database.BookDAO"/>
     <fullyQualifiedTypeName name="com.mysql.cj.protocol.x.SyncFlushDeflaterOutputStream"/>
-    <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
     <fullyQualifiedTypeName name="model.Book"/>
     <fullyQualifiedTypeName name="database.AuthorDAO"/>
     <fullyQualifiedTypeName name="database.BookGenreDAO"/>
     <fullyQualifiedTypeName name="model.BookGenre"/>
     <fullyQualifiedTypeName name="model.Customer"/>
     <fullyQualifiedTypeName name="javax.servlet.RequestDispatcher"/>
-    <fullyQualifiedTypeName name="database.CustomerDAO"/>
     <fullyQualifiedTypeName name="java.util.UUID"/>
     <fullyQualifiedTypeName name="mylib.MySQLDate"/>
+    <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
+    <fullyQualifiedTypeName name="database.CustomerDAO"/>
 </qualifiedTypeNameHistroy>

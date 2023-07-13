@@ -98,12 +98,13 @@ public class CustomerDAO implements DAOInterface<Customer> {
 			Connection connection = JDBCUtil.getConnection();
 
 			// B2: tao doi tuong statement
-			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\"";
+			String sql = "SELECT 1 FROM customer WHERE username=\"" + username + "\"";
 			Statement st = connection.createStatement();
 			System.out.println(st);
 
 			// B3: thuc thi cau lenh SQL
 			ResultSet resultSet = st.executeQuery(sql);
+//			System.out.println("result: " + resultSet);
 			// B4: Xu ly du lieu (ResultSet -> your data)
 			while (resultSet.next()) {
 				result =  true;
@@ -118,6 +119,35 @@ public class CustomerDAO implements DAOInterface<Customer> {
 		return result;
 	}
 	
+	public boolean login(String username, String password) {
+		boolean result = false;
+		try {
+
+			// B1: Tao ket noi den CSDL
+			Connection connection = JDBCUtil.getConnection();
+
+			// B2: tao doi tuong statement
+			String sql = "SELECT 1 FROM customer WHERE username=\"" + username + "\" AND password=\"" + password +"\"";
+			Statement st = connection.createStatement();
+	
+			System.out.println(sql);
+
+			// B3: thuc thi cau lenh SQL
+			ResultSet resultSet = st.executeQuery(sql);
+
+			// B4: Xu ly du lieu (ResultSet -> your data)
+			while (resultSet.next()) {
+				result =  true;
+				break;
+			}
+
+			// B5: Ngat ket noi
+			JDBCUtil.closeConnection(connection);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return result;
+	}
 	
 //	public Customer selectByUsername(String username) {
 //		Customer customer = null;
@@ -162,5 +192,10 @@ public class CustomerDAO implements DAOInterface<Customer> {
 //		}
 //		return customer;
 //	}
+	
+	public static void main(String[] args) {
+		CustomerDAO customerDao = new CustomerDAO();
+		System.out.println(customerDao.login("nttu", "123"));
+	}
 
 }
