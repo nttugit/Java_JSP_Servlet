@@ -68,6 +68,8 @@
                 !=null) ? request.getAttribute("termsConsent") + "" : "" ; String
                 isRegisteredNotification=(request.getAttribute("isRegisteredNotification") !=null) ?
                 request.getAttribute("isRegisteredNotification") + "" : "" ; %>
+
+
                 <div class="container">
                     <div class="register-wrapper row">
                         <h1 class="text-center">ĐĂNG KÝ TÀI KHOẢN</h1>
@@ -151,7 +153,8 @@
                                     required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="isRegisteredNotification" class="form-label">Đăng ký nhận mail khuyến
+                                    <label for="isRegisteredNotification" class="form-label">Đăng ký nhận mail
+                                        khuyến
                                         mãi</label>
                                     <!-- <br> -->
                                     <input type="checkbox" class="form-check-input" id="isRegisteredNotification"

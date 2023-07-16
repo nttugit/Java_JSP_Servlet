@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import database.CustomerDAO;
 import model.Customer;
+import util.MyEncryption;
 
 /**
  * Servlet implementation class Register
@@ -27,7 +28,7 @@ public class Register extends HttpServlet {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -80,6 +81,10 @@ public class Register extends HttpServlet {
 
 		if (!password.equals(repeatPassword)) {
 			errorMsg = "Mật khẩu không khớp.";
+		}
+		
+		if(errorMsg.length() == 0) {
+			password = MyEncryption.toSHA1(password);
 		}
 
 		if (errorMsg.length() > 0) {

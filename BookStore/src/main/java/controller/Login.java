@@ -8,8 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import database.CustomerDAO;
+import model.Customer;
+import util.MyEncryption;
 
 /**
  * Servlet implementation class Login
@@ -32,8 +35,34 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		request.setCharacterEncoding("UTF-8");
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+		CustomerDAO customerDAO = new CustomerDAO();
+		String username = request.getParameter("username");
+		String passsword = request.getParameter("password");
+		
+		request.setAttribute("username", username);
+		request.setAttribute("password", passsword);
+		
+		passsword = MyEncryption.toSHA1(passsword);
+		
+	
+		Customer customer = customerDAO.login(username, passsword);
+
+		String loginError = "";
+		if (customer != null) {
+			HttpSession session  = request.getSession();
+			session.setAttribute("customer", customer);
+		} else {
+			loginError = "Tên đăng nhập hoặc mật khẩu không chính xác.";
+		}
+
+		request.setAttribute("loginError", loginError);
+		String url = "/index.jsp";
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+		rd.forward(request, response);
 	}
 
 	/**
@@ -42,27 +71,8 @@ public class Login extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		CustomerDAO customerDAO = new CustomerDAO();
-		String username = request.getParameter("username");
-		String passsword = request.getParameter("password");
-		
-		System.out.println("username: " + username);
-		System.out.println("passsword: " + passsword);
-		
-		request.setAttribute("username", username);
-		request.setAttribute("password", passsword);
-		boolean isSucceeded = customerDAO.login(username, passsword);
-		System.out.println("isSucceeded: " + isSucceeded);
-		String url = "/";
-		String loginError = "";
-		if (!isSucceeded) {
-			loginError = "Tên đăng nhập hoặc mật khẩu không chính xác.";
-//			url = "/";
-		}
-		
-		request.setAttribute("loginError", loginError);
-		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
-		rd.forward(request, response);
+		doGet(request, response);
+
 	}
 
 }
