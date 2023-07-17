@@ -50,7 +50,7 @@ public class Login extends HttpServlet {
 		
 	
 		Customer customer = customerDAO.login(username, passsword);
-
+		
 		String loginError = "";
 		if (customer != null) {
 			HttpSession session  = request.getSession();

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -47,11 +48,10 @@ public class CustomerDAO implements DAOInterface<Customer> {
 			st.setString(8, t.getEmail());
 			st.setString(9, t.getAddress());
 			st.setBoolean(10, t.isRegisteredNotification());
-			
+
 			// B3
 			result = st.executeUpdate();
-			
-			
+
 			// B4
 			System.out.println(sql);
 			System.out.println("table customer just updated: " + result + " records");
@@ -90,6 +90,36 @@ public class CustomerDAO implements DAOInterface<Customer> {
 		return 0;
 	}
 
+	public int updatePassword(String username, String newPassword) {
+		int result = 0;
+		try {
+			// Bước 1: tạo kết nối đến CSDL
+			Connection con = JDBCUtil.getConnection();
+
+			// Bước 2: tạo ra đối tượng statement
+			String sql = "UPDATE customer " + " SET " + " password=?" + " WHERE username=?";
+
+			PreparedStatement st = con.prepareStatement(sql);
+			st.setString(1, newPassword);
+			st.setString(2, username);
+
+			// Bước 3: thực thi câu lệnh SQL
+			result = st.executeUpdate();
+
+			// Bước 4:
+			System.out.println(sql);
+			System.out.println("Có " + result + " dòng bị thay đổi!");
+
+			// Bước 5:
+			JDBCUtil.closeConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
 	public boolean isExistedUsername(String username) {
 		boolean result = false;
 		try {
@@ -107,7 +137,7 @@ public class CustomerDAO implements DAOInterface<Customer> {
 //			System.out.println("result: " + resultSet);
 			// B4: Xu ly du lieu (ResultSet -> your data)
 			while (resultSet.next()) {
-				result =  true;
+				result = true;
 				break;
 			}
 
@@ -118,7 +148,7 @@ public class CustomerDAO implements DAOInterface<Customer> {
 		}
 		return result;
 	}
-	
+
 	public Customer login(String username, String password) {
 		Customer customer = null;
 		try {
@@ -127,9 +157,9 @@ public class CustomerDAO implements DAOInterface<Customer> {
 			Connection connection = JDBCUtil.getConnection();
 
 			// B2: tao doi tuong statement
-			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\" AND password=\"" + password +"\"";
+			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\" AND password=\"" + password + "\"";
 			Statement st = connection.createStatement();
-	
+
 			System.out.println(sql);
 
 			// B3: thuc thi cau lenh SQL
@@ -137,20 +167,30 @@ public class CustomerDAO implements DAOInterface<Customer> {
 
 			// B4: Xu ly du lieu (ResultSet -> your data)
 			while (resultSet.next()) {
-				customer = new Customer();
-				customer.setFullName(resultSet.getString("fullname"));
-				customer.setUsername(resultSet.getString("username"));
+				String customerID = resultSet.getString("customerid");
+				String userName = resultSet.getString("username");
+//				String password = resultSet.getString("password");
+				String fullName = resultSet.getString("fullname");
+				int sex = resultSet.getInt("sex");
+				String dob = resultSet.getString("dob");
+				String phone = resultSet.getString("phone");
+				String email = resultSet.getString("email");
+				boolean registeredNotification = resultSet.getBoolean("notificationregistration");
+				String address = resultSet.getString("address");
+
+				customer = new Customer(customerID, username, password, fullName, sex, dob, phone, email, address,
+						registeredNotification);
 				break;
 			}
-			
+
 			// B5: Ngat ket noi
 			JDBCUtil.closeConnection(connection);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return customer;
 	}
-	
+
 //	public Customer selectByUsername(String username) {
 //		Customer customer = null;
 //
@@ -194,7 +234,7 @@ public class CustomerDAO implements DAOInterface<Customer> {
 //		}
 //		return customer;
 //	}
-	
+
 //	public static void main(String[] args) {
 //		CustomerDAO customerDao = new CustomerDAO();
 //

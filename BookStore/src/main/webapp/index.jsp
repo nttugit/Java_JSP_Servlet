@@ -22,6 +22,10 @@
 					text-decoration: none;
 					color: white;
 				}
+
+				/* .dropdown-menu>li>a {
+					-webkit-transform: rotateY(180deg);
+				} */
 			</style>
 		</head>
 
@@ -67,8 +71,7 @@
 											<li><a class="dropdown-item" href="#">Áo sơ mi</a></li>
 										</ul>
 									</li>
-									<li class="nav-item"><a class="nav-link disabled">Hết hàng</a>
-									</li>
+
 								</ul>
 								<form class="d-flex" role="search">
 									<input class="form-control me-2" type="search" placeholder="Từ khoá"
@@ -87,15 +90,35 @@
 											style="white-space: nowrap; margin-left: 10px;">Đăng nhập</button>
 
 										<% } else { %>
-											<button type="button" class="btn btn-outline-success"
+											<!-- <button type="button" class="btn btn-outline-success"
 												style="white-space: nowrap; margin-left: 10px;">
 												<%=userFirstName%>
 
-											</button>
-											<button type="button" class="btn btn-success" id="logoutBtn"
+											</button> -->
+											<!-- <button type="button" class="btn btn-success" id="logoutBtn"
 												style="white-space: nowrap; margin-left: 10px;">
 												<a href="logout">Đăng xuất</a>
-											</button>
+											</button> -->
+
+											<ul class="navbar-nav">
+												<li class="nav-item dropdown">
+													<a class="nav-link dropdown-toggle" href="#" role="button"
+														data-bs-toggle="dropdown" aria-expanded="false">
+														<%=userFirstName%>
+													</a>
+
+													<ul class="dropdown-menu dropdown-menu-end">
+														<li><a class="dropdown-item" href="profile.jsp">Tài khoản</a>
+														</li>
+														<li><a class="dropdown-item" href="my_orders.jsp">Đơn mua</a>
+														</li>
+														<li>
+															<hr class="dropdown-divider">
+														</li>
+														<li><a class="dropdown-item" href="logout">Đăng xuất</a></li>
+													</ul>
+												</li>
+											</ul>
 											<% } %>
 								</form>
 							</div>
