@@ -13,7 +13,9 @@ public class Customer {
 //	private String deliveryAddress;
 //	private String storeAddress;
 	private boolean notificationRegistration;// register for receiving notifications or not
-
+	
+	// được bổ sung sau
+	private String avatar;
 	public Customer() {
 		super();
 	}
@@ -137,6 +139,12 @@ public class Customer {
 //		this.storeAddress = storeAddress;
 //	}
 
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 	
+	public String getAvatar() {
+		return this.avatar;
+	}
 	
 }

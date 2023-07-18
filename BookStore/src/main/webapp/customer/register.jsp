@@ -77,7 +77,9 @@
 
                         <div class="register-form col-6">
 
-                            <form action="do-register" class="form" method="POST">
+                            <form action="customer" class="form" method="POST">
+                                <input type="hidden" name="action" value="register">
+
                                 <div class="red" id="errorMsg">
                                     <%= errorMsg %>
                                 </div>

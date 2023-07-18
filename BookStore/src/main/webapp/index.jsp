@@ -26,6 +26,15 @@
                 /* .dropdown-menu>li>a {
 					-webkit-transform: rotateY(180deg);
 				} */
+                .avatar_href_wrapper {
+                    padding: 5px;
+                }
+
+                #customerAvatar {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                }
             </style>
         </head>
 
@@ -76,7 +85,7 @@
                                 <form class="d-flex" role="search">
                                     <input class="form-control me-2" type="search" placeholder="Từ khoá"
                                         aria-label="Search">
-                                    <button class="btn btn-outline-success" type="submit">Tìm</button>
+                                    <button class="btn btn-outline-success" type="button">Tìm</button>
                                     <!-- <a  
                         
                         href="register.jsp" class="btn btn-primary" style="white-space: nowrap; margin-left: 10px;">
@@ -102,20 +111,26 @@
 
                                             <ul class="navbar-nav">
                                                 <li class="nav-item dropdown">
-                                                    <a class="nav-link dropdown-toggle" href="#" role="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
+
+                                                    <a class="nav-link dropdown-toggle avatar_href_wrapper" href="#"
+                                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <img id="customerAvatar" src="<%= path %>/img/avatar_tu.jpg"
+                                                            alt="">
                                                         <%=userFirstName%>
                                                     </a>
 
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li><a class="dropdown-item" href="profile.jsp">Tài khoản</a>
+                                                        <li><a class="dropdown-item" href="customer/profile.jsp">Tài
+                                                                khoản</a>
                                                         </li>
-                                                        <li><a class="dropdown-item" href="my_orders.jsp">Đơn mua</a>
+                                                        <li><a class="dropdown-item" href="customer/my-orders.jsp">Đơn
+                                                                mua</a>
                                                         </li>
                                                         <li>
                                                             <hr class="dropdown-divider">
                                                         </li>
-                                                        <li><a class="dropdown-item" href="logout">Đăng xuất</a></li>
+                                                        <li><a class="dropdown-item" href="customer?action=logout">Đăng
+                                                                xuất</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -263,7 +278,8 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="login" method="POST">
+                                        <form action="customer" method="POST">
+                                            <input type="hidden" name="action" value="login" />
                                             <div class="red" id="loginError">
                                                 <%=loginError%>
                                             </div>
@@ -279,8 +295,8 @@
                                                     value="<%=loginError != "" ? password : ""%>" required>
                                             </div>
                                             <div class="mb-3 text-center">
-                                                <a href="forgot-password.jsp">Quên mật khẩu</a> | <a
-                                                    href="register.jsp">Đăng ký tài khoản mới</a>
+                                                <a href="customer/forgot-password.jsp">Quên mật khẩu</a> | <a
+                                                    href="customer/register.jsp">Đăng ký tài khoản mới</a>
                                             </div>
                                             <!-- <div class="modal-footer"> -->
                                             <div class="mb-3 text-center">
