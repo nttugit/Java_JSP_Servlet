@@ -21,9 +21,45 @@ public class CustomerDAO implements DAOInterface<Customer> {
 	}
 
 	@Override
-	public Customer selectById(String t) {
-		// TODO Auto-generated method stub
-		return null;
+	public Customer selectById(String id) {
+		Customer customer = null;
+		try {
+			// B1: Tao ket noi den CSDL
+			Connection connection = JDBCUtil.getConnection();
+
+			// B2: tao doi tuong statement
+			String sql = "SELECT * FROM customer WHERE customerid=\'" + id + "\'";
+			Statement st = connection.createStatement();
+
+			System.out.println(sql);
+
+			// B3: thuc thi cau lenh SQL
+			ResultSet resultSet = st.executeQuery(sql);
+
+			// B4: Xu ly du lieu (ResultSet -> your data)
+			while (resultSet.next()) {
+				String customerID = resultSet.getString("customerid");
+				String userName = resultSet.getString("username");
+				String password = resultSet.getString("password");
+				String fullName = resultSet.getString("fullname");
+				int sex = resultSet.getInt("sex");
+				String dob = resultSet.getString("dob");
+				String phone = resultSet.getString("phone");
+				String email = resultSet.getString("email");
+				boolean registeredNotification = resultSet.getBoolean("notificationregistration");
+				String address = resultSet.getString("address");
+
+				customer = new Customer(customerID, userName, password, fullName, sex, dob, phone, email, address,
+						registeredNotification);
+				break;
+			}
+
+			// B5: Ngat ket noi
+			JDBCUtil.closeConnection(connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return customer;
 	}
 
 	@Override
@@ -86,8 +122,42 @@ public class CustomerDAO implements DAOInterface<Customer> {
 
 	@Override
 	public int update(Customer t) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		try {
+			// Bước 1: tạo kết nối đến CSDL
+			Connection con = JDBCUtil.getConnection();
+
+			// Bước 2: tạo ra đối tượng statement
+			String sql = "UPDATE customer SET fullname=?, sex=?, dob=?"
+					+ ", phone=?, email=?, address=?, notificationregistration=?"
+					+ " WHERE customerid=?";
+
+			PreparedStatement st = con.prepareStatement(sql);
+			st.setString(1, t.getFullName());
+			st.setInt(2, t.getSex());
+			MySQLDate mySqlDate = new MySQLDate();
+			st.setDate(3, mySqlDate.getDateFrom(t.getDob()));
+			st.setString(4, t.getPhone());
+			st.setString(5, t.getEmail());
+			st.setString(6, t.getAddress());
+			st.setBoolean(7, t.isRegisteredNotification());
+			st.setString(8, t.getCustomerID());
+
+			// Bước 3: thực thi câu lệnh SQL
+			result = st.executeUpdate();
+
+			// Bước 4:
+			System.out.println(sql);
+			System.out.println("Có " + result + " dòng bị thay đổi!");
+
+			// Bước 5:
+			JDBCUtil.closeConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 	public int updatePassword(String username, String newPassword) {
@@ -102,6 +172,41 @@ public class CustomerDAO implements DAOInterface<Customer> {
 			PreparedStatement st = con.prepareStatement(sql);
 			st.setString(1, newPassword);
 			st.setString(2, username);
+
+			// Bước 3: thực thi câu lệnh SQL
+			result = st.executeUpdate();
+
+			// Bước 4:
+			System.out.println(sql);
+			System.out.println("Có " + result + " dòng bị thay đổi!");
+
+			// Bước 5:
+			JDBCUtil.closeConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	public int updateAFieldByID(String customerID, String fieldName, String value) {
+		int result = 0;
+		try {
+			System.out.println(customerID +  ", " + fieldName + ", " + value);
+			// Bước 1: tạo kết nối đến CSDL
+			Connection con = JDBCUtil.getConnection();
+
+			// Bước 2: tạo ra đối tượng statement
+			String sql = "UPDATE customer " + " SET " + fieldName + "=?" + " WHERE customerid=?";
+
+			PreparedStatement st = con.prepareStatement(sql);
+			st.setString(2, customerID);
+			if(fieldName=="notificationregistration") {
+				st.setBoolean(1, value != null);
+			}else {
+				st.setString(1, customerID);
+			}
 
 			// Bước 3: thực thi câu lệnh SQL
 			result = st.executeUpdate();
@@ -238,7 +343,7 @@ public class CustomerDAO implements DAOInterface<Customer> {
 //	public static void main(String[] args) {
 //		CustomerDAO customerDao = new CustomerDAO();
 //
-//		System.out.println(customerDao.login("nttu", "123"));
+//		System.out.println(customerDao.selectById("0d2a1707-15a3-4a94-bfd8-03117586c6a2"));
 //	}
 
 }

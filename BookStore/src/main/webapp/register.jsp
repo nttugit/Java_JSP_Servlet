@@ -54,6 +54,7 @@
     <body>
         <% String path=request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
             request.getContextPath(); %>
+
             <% String errorMsg=(request.getAttribute("errorMsg") !=null) ? request.getAttribute("errorMsg") + "" : "" ;
                 String username=(request.getAttribute("username") !=null) ? request.getAttribute("username") + "" : "" ;
                 String password=(request.getAttribute("password") !=null) ? request.getAttribute("password") + "" : "" ;

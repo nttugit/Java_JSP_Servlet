@@ -48,11 +48,6 @@ public class Register extends HttpServlet {
 		String termsConsent = request.getParameter("termsConsent");
 		String isRegisteredNotification = request.getParameter("isRegisteredNotification");
 		
-		
-		System.out.println("termsConsent: "+termsConsent);
-		System.out.println("isRegisteredNotification: "+isRegisteredNotification);
-		System.out.println("sex: "+sex);
-
 		request.setAttribute("username", username);
 		request.setAttribute("password", password);
 		request.setAttribute("repeatPassword", repeatPassword);

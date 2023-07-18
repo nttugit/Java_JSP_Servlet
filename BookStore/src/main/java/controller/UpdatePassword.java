@@ -42,7 +42,7 @@ public class UpdatePassword extends HttpServlet {
 		String noMatchPasswordError = "";
 		String wrongPasswordError = "";
 		String expiredSessionError = "";
-		String updateMsg = "";
+		String updatePasswordMsg = "";
 		int result = 0;
 
 		// Get data
@@ -64,6 +64,7 @@ public class UpdatePassword extends HttpServlet {
 			url = "/index.jsp";
 		} else {
 			customer = (Customer)session.getAttribute("customer");
+			System.out.println(customer);
 			if (!customer.getPassword().equals(passsword)) {
 				wrongPasswordError = "Mật khẩu hiên tại không chính xác.";
 			}else {
@@ -73,9 +74,9 @@ public class UpdatePassword extends HttpServlet {
 					// Update password into database
 					result = customerDAO.updatePassword(customer.getUsername(), newPassword);
 					if (result > 0) {
-						updateMsg = "Đổi mật khẩu thành công";
+						updatePasswordMsg = "Đổi mật khẩu thành công";
 					} else {
-						updateMsg = "Lỗi trong quá trình cập nhật. Vui lòng thử lại.";
+						updatePasswordMsg = "Lỗi trong quá trình cập nhật. Vui lòng thử lại.";
 					}
 				}
 			}
@@ -85,7 +86,10 @@ public class UpdatePassword extends HttpServlet {
 		request.setAttribute("noMatchPasswordError", noMatchPasswordError);
 		request.setAttribute("wrongPasswordError", wrongPasswordError);
 		request.setAttribute("expiredSessionError", expiredSessionError);
-		request.setAttribute("updateMsg", updateMsg);
+		request.setAttribute("updatePasswordMsg", updatePasswordMsg);
+		
+		// để nhận biết và xử lý event chuyển tới tab đổi mật khẩu
+		request.setAttribute("isUpdatePassword", "isUpdatePassword");
 
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
