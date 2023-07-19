@@ -14,5 +14,7 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/mysql-connector-java-8.0.29-tidb-1.0.2.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/javax.mail-1.6.2.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/javax.activation-1.2.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
