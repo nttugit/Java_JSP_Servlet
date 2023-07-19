@@ -21,57 +21,59 @@ import util.MyEncryption;
 @WebServlet("/customer")
 public class CustomerController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CustomerController() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public CustomerController() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String action = request.getParameter("action");
 		System.out.println(action);
 		switch (action) {
 		case "login": {
-			login(request,response);
+			login(request, response);
 			break;
 		}
 		case "logout": {
-			logout(request,response);
+			logout(request, response);
 			break;
 		}
 		case "register": {
-			register(request,response);
+			register(request, response);
 			break;
 		}
 		case "updatePassword": {
-			updatePassword(request,response);
+			updatePassword(request, response);
 			break;
 		}
 		case "updateProfile": {
-			updateProfile(request,response);
+			updateProfile(request, response);
 			break;
 		}
 		case "updateNotification": {
-			updateNotification(request,response);
+			updateNotification(request, response);
 			break;
 		}
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + action);
 		}
 	}
-	
-
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
@@ -79,54 +81,61 @@ public class CustomerController extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 
 	/**
 	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
 	 */
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
-	
-	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		// TODO Auto-generated method stub
 //		response.getWriter().append("Served at: ").append(request.getContextPath());
 		CustomerDAO customerDAO = new CustomerDAO();
-		String username = request.getParameter("username");
-		String passsword = request.getParameter("password");
-		
-		request.setAttribute("username", username);
-		request.setAttribute("password", passsword);
-		
+		String username = request.getParameter("loginUsername");
+		String passsword = request.getParameter("loginPassword");
+
+		request.setAttribute("loginPassword", username);
+		request.setAttribute("loginPassword", passsword);
+
 		passsword = MyEncryption.toSHA1(passsword);
-		
-	
+
 		Customer customer = customerDAO.login(username, passsword);
-		
+
 		String loginError = "";
 		if (customer != null) {
-			HttpSession session  = request.getSession();
+			HttpSession session = request.getSession();
 			session.setAttribute("customer", customer);
 		} else {
 			loginError = "Tên đăng nhập hoặc mật khẩu không chính xác.";
 		}
 
 		request.setAttribute("loginError", loginError);
+//		String referer = request.getHeader("referer");
+//		if(referer.charAt(referer.length() - 1) =='/') {
+//			referer = referer.substring(0, referer.length() - 2);
+//		}
+//		System.out.println("referer: "+referer);
 		String url = "/index.jsp";
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
 	}
 
-	private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		HttpSession session =  request.getSession();
+	private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		session.invalidate();
 		response.sendRedirect("index.jsp");
 	}
-	
-	private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+	private void register(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String repeatPassword = request.getParameter("repeatPassword");
@@ -138,7 +147,7 @@ public class CustomerController extends HttpServlet {
 		String dob = request.getParameter("dob");
 		String termsConsent = request.getParameter("termsConsent");
 		String isRegisteredNotification = request.getParameter("isRegisteredNotification");
-		
+
 		request.setAttribute("username", username);
 		request.setAttribute("password", password);
 		request.setAttribute("repeatPassword", repeatPassword);
@@ -168,8 +177,8 @@ public class CustomerController extends HttpServlet {
 		if (!password.equals(repeatPassword)) {
 			errorMsg = "Mật khẩu không khớp.";
 		}
-		
-		if(errorMsg.length() == 0) {
+
+		if (errorMsg.length() == 0) {
 			password = MyEncryption.toSHA1(password);
 		}
 
@@ -183,7 +192,7 @@ public class CustomerController extends HttpServlet {
 
 			Customer newCustomer = new Customer(customerID, username, password, fullName, sex, dob, phone, email,
 					address, isRegisteredNotification != null);
-			
+
 			System.out.println("new customer: " + newCustomer);
 			customerDAO.insert(newCustomer);
 		}
@@ -192,8 +201,9 @@ public class CustomerController extends HttpServlet {
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
 	}
-	
-	private void updatePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+	private void updatePassword(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
 		CustomerDAO customerDAO = new CustomerDAO();
@@ -214,22 +224,20 @@ public class CustomerController extends HttpServlet {
 		newPassword = MyEncryption.toSHA1(newPassword);
 		repeatPassword = MyEncryption.toSHA1(repeatPassword);
 
-		
-
 		// Get user from session
 		Object obj = session.getAttribute("customer");
 		if (obj == null) {
 			expiredSessionError = "Vui lòng đăng nhập lại.";
 			url = "/index.jsp";
 		} else {
-			customer = (Customer)session.getAttribute("customer");
+			customer = (Customer) session.getAttribute("customer");
 			System.out.println(customer);
 			if (!customer.getPassword().equals(passsword)) {
 				wrongPasswordError = "Mật khẩu hiên tại không chính xác.";
-			}else {
+			} else {
 				if (!newPassword.equals(repeatPassword)) {
 					noMatchPasswordError = "Mật khẩu không khớp. Vui lòng nhập lại.";
-				}else {
+				} else {
 					// Update password into database
 					result = customerDAO.updatePassword(customer.getUsername(), newPassword);
 					if (result > 0) {
@@ -239,14 +247,14 @@ public class CustomerController extends HttpServlet {
 					}
 				}
 			}
-			
+
 		}
 
 		request.setAttribute("noMatchPasswordError", noMatchPasswordError);
 		request.setAttribute("wrongPasswordError", wrongPasswordError);
 		request.setAttribute("expiredSessionError", expiredSessionError);
 		request.setAttribute("updatePasswordMsg", updatePasswordMsg);
-		
+
 		// để nhận biết và xử lý event chuyển tới tab đổi mật khẩu
 		request.setAttribute("isUpdatePassword", "isUpdatePassword");
 
@@ -254,7 +262,8 @@ public class CustomerController extends HttpServlet {
 		rd.forward(request, response);
 	}
 
-	private void updateProfile(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	private void updateProfile(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 
 		String fullName = request.getParameter("fullName");
@@ -263,7 +272,7 @@ public class CustomerController extends HttpServlet {
 		String email = request.getParameter("email");
 		int sex = Integer.parseInt(request.getParameter("sex"));
 		String dob = request.getParameter("dob");
-		
+
 		CustomerDAO customerDAO = new CustomerDAO();
 		Customer customer = null;
 		String updateProfileMsg = "";
@@ -277,7 +286,7 @@ public class CustomerController extends HttpServlet {
 			url = "/index.jsp";
 		} else {
 			customer = (Customer) session.getAttribute("customer");
-			
+
 			customer.setFullName(fullName);
 			customer.setPhone(phone);
 			customer.setAddress(address);
@@ -286,15 +295,15 @@ public class CustomerController extends HttpServlet {
 			customer.setDob(dob);
 			result = customerDAO.update(customer);
 		}
-		
-		if(result > 0) {
+
+		if (result > 0) {
 			updateProfileMsg = "Cập nhật thành công.";
 //			customer = customerDAO.selectById(customer.getCustomerID());
 			session.setAttribute("customer", customer);
-		}else {
+		} else {
 			updateProfileMsg = "Cập nhật thất bại. Vui lòng thử lại.";
 		}
-		
+
 		request.setAttribute("updateProfileMsg", updateProfileMsg);
 		// để nhận biết và xử lý event chuyển tới tab cập nhật hồ sơ
 //		request.setAttribute("isUpdateProfile", "isUpdateProfile");
@@ -302,8 +311,9 @@ public class CustomerController extends HttpServlet {
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
 	}
-	
-	private void updateNotification(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+	private void updateNotification(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		CustomerDAO customerDAO = new CustomerDAO();
 		Customer customer = null;
@@ -323,14 +333,14 @@ public class CustomerController extends HttpServlet {
 			result = customerDAO.updateAFieldByID(customer.getCustomerID(), "notificationregistration",
 					isRegisteredNotification);
 		}
-		if(result > 0) {
+		if (result > 0) {
 			updateNotificationMsg = "Cập nhật thành công.";
 			customer = customerDAO.selectById(customer.getCustomerID());
 			session.setAttribute("customer", customer);
-		}else {
+		} else {
 			updateNotificationMsg = "Cập nhật thất bại. Vui lòng thử lại.";
 		}
-		
+
 		request.setAttribute("updateNotificationMsg", updateNotificationMsg);
 		// để nhận biết và xử lý event chuyển tới tab cập nhật thông báo
 		request.setAttribute("isUpdateNotification", "isUpdateNotification");
@@ -338,5 +348,5 @@ public class CustomerController extends HttpServlet {
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
 	}
-	
+
 }
