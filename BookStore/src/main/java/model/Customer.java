@@ -16,6 +16,11 @@ public class Customer {
 	
 	// được bổ sung sau
 	private String avatar;
+	
+	// được bổ sung sau
+	private String verificationCode;
+	private String codeExpiredTime;
+	
 	public Customer() {
 		super();
 	}
@@ -34,6 +39,26 @@ public class Customer {
 		this.address = address;
 //		this.deliveryAddress = deliveryAddress;
 //		this.storeAddress = storeAddress;
+	}
+	
+	
+
+	public Customer(String customerID, String username, String password, String fullName, int sex, String dob,
+			String phone, String email, String address, boolean notificationRegistration, String verificationCode,
+			String codeExpiredTime) {
+		super();
+		this.customerID = customerID;
+		this.username = username;
+		this.password = password;
+		this.fullName = fullName;
+		this.sex = sex;
+		this.dob = dob;
+		this.phone = phone;
+		this.email = email;
+		this.address = address;
+		this.notificationRegistration = notificationRegistration;
+		this.verificationCode = verificationCode;
+		this.codeExpiredTime = codeExpiredTime;
 	}
 
 	public String getCustomerID() {
@@ -146,5 +171,22 @@ public class Customer {
 	public String getAvatar() {
 		return this.avatar;
 	}
+
+	public String getVerficationCode() {
+		return verificationCode;
+	}
+
+	public void setVerficationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	public String getCodeExpiredTime() {
+		return codeExpiredTime;
+	}
+
+	public void setCodeExpiredTime(String codeExpiredTime) {
+		this.codeExpiredTime = codeExpiredTime;
+	}
+	
 	
 }

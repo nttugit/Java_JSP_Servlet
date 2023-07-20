@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import javax.servlet.RequestDispatcher;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import database.CustomerDAO;
 import model.Customer;
+import util.MyEmailService;
 import util.MyEncryption;
 
 /**
@@ -49,6 +52,14 @@ public class CustomerController extends HttpServlet {
 		}
 		case "register": {
 			register(request, response);
+			break;
+		}
+		case "verifyAccount": {
+			verifyAccount(request, response);
+			break;
+		}
+		case "resendVerificationCode": {
+			resendVerificationCode(request, response);
 			break;
 		}
 		case "updatePassword": {
@@ -104,26 +115,25 @@ public class CustomerController extends HttpServlet {
 
 		request.setAttribute("loginPassword", username);
 		request.setAttribute("loginPassword", passsword);
+		String loginError = "";
+		String url = "/index.jsp";
 
 		passsword = MyEncryption.toSHA1(passsword);
 
 		Customer customer = customerDAO.login(username, passsword);
-
-		String loginError = "";
+		System.out.println(customer);
 		if (customer != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("customer", customer);
+			if (customer.getVerficationCode() != null) {
+				loginError = "Tài khoản chưa được xác thực. Vui lòng xác thực qua email đã đăng ký";
+			}else {
+				HttpSession session = request.getSession();
+				session.setAttribute("customer", customer);
+			}
 		} else {
 			loginError = "Tên đăng nhập hoặc mật khẩu không chính xác.";
 		}
 
 		request.setAttribute("loginError", loginError);
-//		String referer = request.getHeader("referer");
-//		if(referer.charAt(referer.length() - 1) =='/') {
-//			referer = referer.substring(0, referer.length() - 2);
-//		}
-//		System.out.println("referer: "+referer);
-		String url = "/index.jsp";
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
 	}
@@ -136,6 +146,10 @@ public class CustomerController extends HttpServlet {
 
 	private void register(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath();
+
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String repeatPassword = request.getParameter("repeatPassword");
@@ -160,12 +174,10 @@ public class CustomerController extends HttpServlet {
 		request.setAttribute("termsConsent", termsConsent);
 		request.setAttribute("isRegisteredNotification", isRegisteredNotification);
 
-//		System.out.println(username + password+  repeatPassword+ fullName+ phone+ address+ email+sex +dob + termsConsent);
-		;
-
 		// Xử lý lỗi
 		String errorMsg = "";
-		String url = "/";
+		String registerMsg = "";
+		String url = "/customer/register.jsp";
 		CustomerDAO customerDAO = new CustomerDAO();
 
 		boolean exist = customerDAO.isExistedUsername(username);
@@ -182,24 +194,136 @@ public class CustomerController extends HttpServlet {
 			password = MyEncryption.toSHA1(password);
 		}
 
-		if (errorMsg.length() > 0) {
-			url = "/register.jsp";
-		} else {
-			String customerID = UUID.randomUUID().toString();
+		String customerID = UUID.randomUUID().toString();
 
-			System.out.println(username + password + repeatPassword + fullName + phone + address + email + sex + dob
-					+ termsConsent + customerID);
+		System.out.println(username + password + repeatPassword + fullName + phone + address + email + sex + dob
+				+ termsConsent + customerID);
 
-			Customer newCustomer = new Customer(customerID, username, password, fullName, sex, dob, phone, email,
-					address, isRegisteredNotification != null);
+		Customer newCustomer = new Customer(customerID, username, password, fullName, sex, dob, phone, email, address,
+				isRegisteredNotification != null);
 
-			System.out.println("new customer: " + newCustomer);
-			customerDAO.insert(newCustomer);
+		System.out.println("new customer: " + newCustomer);
+		// Tạo vào DB
+		customerDAO.insert(newCustomer);
+
+		// Gửi mail verification
+		Customer customer = customerDAO.createNewVerificationCode(customerID);
+		if (customer != null) {
+			String subject = "XÁC THỰC TÀI KHOẢN - LAOZI BOOK";
+			String content = "Nhấp vào liên kết phía dưới để tiến hành xác thực tài khoản:\n" + path
+					+ "/customer?action=verifyAccount&customerID=" + customerID + "&code="
+					+ customer.getVerficationCode();
+			System.out.println(content);
+			MyEmailService.sendEmail(customer.getEmail(), subject, content);
+			registerMsg = "Vui lòng kiểm tra email để tiến hành xác thực tài khoản.";
 		}
+
 		request.setAttribute("errorMsg", errorMsg);
+		request.setAttribute("registerMsg", registerMsg);
 
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
+	}
+
+	private void verifyAccount(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+
+		/**
+		 * Nếu đường link không hợp lệ (user chỉnh sửa) -> redirect trang chủ hoặc 404
+		 * -> ok Nếu đường link có thông tin, check nếu hợp lệ -> forward đến trang
+		 * thông báo thành công -> ok check code và expiration time nếu không hợp lệ ->
+		 * thông báo người dùng có thể resend để nhận link mới ->
+		 */
+
+		String customerID = request.getParameter("customerID");
+		String code = request.getParameter("code");
+		CustomerDAO customerDAO = new CustomerDAO();
+
+		String verifyMsg = "";
+		String verifyError = "";
+		String url = "/customer/verification.jsp";
+		Customer customer = customerDAO.getVerificationCode(customerID);
+
+		if (customer == null) {
+			response.sendRedirect("index.jsp");
+		} else {
+			// Verify code, expired time < current time
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			LocalDateTime currentTime = LocalDateTime.now();
+			LocalDateTime expiredTime = LocalDateTime.parse(customer.getCodeExpiredTime(), formatter);
+
+			if (code.equals(customer.getVerficationCode()) && (expiredTime.compareTo(currentTime) > 0)) {
+				customerDAO.verifyAccount(customerID);
+				verifyMsg = "Xác thực thành công. Giờ đây bạn có thể đăng nhập bằng tài khoản của mình.";
+			} else {
+				verifyError = "Đường liên kết xác thực đã hết hiệu lực.";
+			}
+
+			request.setAttribute("verifyMsg", verifyMsg);
+			request.setAttribute("verifyError", verifyError);
+
+			RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+			rd.forward(request, response);
+		}
+	}
+
+	private void resendVerificationCode(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath();
+
+		String customerID = request.getParameter("customerID");
+
+		System.out.println(customerID + ", " + customerID);
+
+		CustomerDAO customerDAO = new CustomerDAO();
+
+		String url = "/customer/verification.jsp";
+		String resendMsg = "";
+		Customer customer = customerDAO.createNewVerificationCode(customerID);
+		if (customer != null) {
+			String subject = "XÁC THỰC TÀI KHOẢN - LAOZI BOOK";
+			String content = "Nhấp vào liên kết phía dưới để tiến hành xác thực tài khoản:\n" + path
+					+ "/customer?action=verifyAccount&customerID=" + customerID + "&code="
+					+ customer.getVerficationCode();
+			System.out.println(content);
+			MyEmailService.sendEmail(customer.getEmail(), subject, content);
+			resendMsg = "Vui lòng kiểm tra email để tiến hành xác thực tài khoản.";
+		} else {
+			resendMsg = "Xảy ra lỗi trong quá trình yêu cầu xác thực. Vui lòng thử lại sau.";
+		}
+
+//		
+//		String verifyMsg = "";
+//		String verifyError = "";
+//		String url = "/customer/verification.jsp";
+//		Customer customer = customerDAO.getVerificationCode(customerID);
+//		System.out.println("customer: " + customer);
+//		
+//		
+//		if (customer == null) {
+//			response.sendRedirect("index.jsp");
+//		} else {
+//			// Verify code, expired time < current time
+//			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//			LocalDateTime currentTime = LocalDateTime.now();
+//			LocalDateTime expiredTime = LocalDateTime.parse(customer.getCodeExpiredTime(), formatter);
+//			
+//			if(code.equals(customer.getVerficationCode()) && (expiredTime.compareTo(currentTime) > 0) ) {
+//				verifyMsg = "Xác thực thành công. Giờ đây bạn có thể đăng nhập bằng tài khoản của mình.";
+//			}else {
+//				verifyError = "Đường liên kết xác thực đã hết hiệu lực.";
+//			}
+//			
+//			request.setAttribute("verifyMsg", verifyMsg);
+		request.setAttribute("resendMsg", resendMsg);
+//
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+		rd.forward(request, response);
+//		}
+//		
 	}
 
 	private void updatePassword(HttpServletRequest request, HttpServletResponse response)

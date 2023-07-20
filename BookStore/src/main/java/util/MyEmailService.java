@@ -12,12 +12,14 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class Email {
+public class MyEmailService {
 	// nttudocs@gmail.com
 	// 123456789
 	// lebbvrdsirmaoepg
-
-	public static void sendEmail(String from, String password, String to, String subject, String content) {
+	final static String from = "nttudocs@gmail.com";
+	final static String password = "lebbvrdsirmaoepg";
+	
+	public static void sendEmail(String to, String subject, String content) {
 		// Props
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -62,8 +64,7 @@ public class Email {
 	}
 
 	public static void main(String[] args) {
-		String from = "nttudocs@gmail.com";
-		String password = "lebbvrdsirmaoepg";
+	
 		String to = "nttudocs@gmail.com";
 		String subject = "Test gửi mail";
 
@@ -73,6 +74,6 @@ public class Email {
 				+ "  <img src=\"https://cdn-www.vinid.net/81717785-cach-san-voucher-ve-xem-phim.jpg\" alt=\"\">\r\n"
 				+ "  </body>\r\n" + "</html>";
 
-		sendEmail(from, password, to, subject, content);
+		sendEmail(to, subject, content);
 	}
 }

@@ -6,11 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import com.mysql.cj.result.LocalDateTimeValueFactory;
 
 import model.Author;
 import model.Customer;
 import mylib.MySQLDate;
+import util.MyRandom;
 
 public class CustomerDAO implements DAOInterface<Customer> {
 
@@ -48,9 +54,11 @@ public class CustomerDAO implements DAOInterface<Customer> {
 				String email = resultSet.getString("email");
 				boolean registeredNotification = resultSet.getBoolean("notificationregistration");
 				String address = resultSet.getString("address");
+				String verificationCode = resultSet.getString("verificationcode");
+				String codeExpiredTime = resultSet.getDate("codeexpiredtime") !=null ? resultSet.getDate("codeexpiredtime").toString() : null;
 
 				customer = new Customer(customerID, userName, password, fullName, sex, dob, phone, email, address,
-						registeredNotification);
+						registeredNotification,verificationCode, codeExpiredTime);
 				break;
 			}
 
@@ -129,8 +137,7 @@ public class CustomerDAO implements DAOInterface<Customer> {
 
 			// Bước 2: tạo ra đối tượng statement
 			String sql = "UPDATE customer SET fullname=?, sex=?, dob=?"
-					+ ", phone=?, email=?, address=?, notificationregistration=?"
-					+ " WHERE customerid=?";
+					+ ", phone=?, email=?, address=?, notificationregistration=?" + " WHERE customerid=?";
 
 			PreparedStatement st = con.prepareStatement(sql);
 			st.setString(1, t.getFullName());
@@ -189,11 +196,11 @@ public class CustomerDAO implements DAOInterface<Customer> {
 
 		return result;
 	}
-	
+
 	public int updateAFieldByID(String customerID, String fieldName, String value) {
 		int result = 0;
 		try {
-			System.out.println(customerID +  ", " + fieldName + ", " + value);
+			System.out.println(customerID + ", " + fieldName + ", " + value);
 			// Bước 1: tạo kết nối đến CSDL
 			Connection con = JDBCUtil.getConnection();
 
@@ -202,9 +209,9 @@ public class CustomerDAO implements DAOInterface<Customer> {
 
 			PreparedStatement st = con.prepareStatement(sql);
 			st.setString(2, customerID);
-			if(fieldName=="notificationregistration") {
+			if (fieldName == "notificationregistration") {
 				st.setBoolean(1, value != null);
-			}else {
+			} else {
 				st.setString(1, customerID);
 			}
 
@@ -262,13 +269,14 @@ public class CustomerDAO implements DAOInterface<Customer> {
 			Connection connection = JDBCUtil.getConnection();
 
 			// B2: tao doi tuong statement
-			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\" AND password=\"" + password + "\"";
-			Statement st = connection.createStatement();
-
+			String sql = "SELECT * FROM customer WHERE username=? AND password=?";
+			PreparedStatement st = connection.prepareStatement(sql);
+			st.setString(1, username);
+			st.setString(2, password);
 			System.out.println(sql);
-
+			System.out.println(username + " " + password);
 			// B3: thuc thi cau lenh SQL
-			ResultSet resultSet = st.executeQuery(sql);
+			ResultSet resultSet = st.executeQuery();
 
 			// B4: Xu ly du lieu (ResultSet -> your data)
 			while (resultSet.next()) {
@@ -282,9 +290,12 @@ public class CustomerDAO implements DAOInterface<Customer> {
 				String email = resultSet.getString("email");
 				boolean registeredNotification = resultSet.getBoolean("notificationregistration");
 				String address = resultSet.getString("address");
+				String verificationCode = resultSet.getString("verificationcode");
+				String codeExpiredTime = resultSet.getDate("codeexpiredtime") !=null ? resultSet.getDate("codeexpiredtime").toString() : null;
+				
 
-				customer = new Customer(customerID, username, password, fullName, sex, dob, phone, email, address,
-						registeredNotification);
+				customer = new Customer(customerID, userName, password, fullName, sex, dob, phone, email, address,
+						registeredNotification,verificationCode, codeExpiredTime);
 				break;
 			}
 
@@ -296,54 +307,102 @@ public class CustomerDAO implements DAOInterface<Customer> {
 		return customer;
 	}
 
-//	public Customer selectByUsername(String username) {
-//		Customer customer = null;
-//
-//		try {
-//
-//			// B1: Tao ket noi den CSDL
-//			Connection connection = JDBCUtil.getConnection();
-//
-//			// B2: tao doi tuong statement
-//			String sql = "SELECT * FROM customer WHERE username=\"" + username + "\"";
-//			Statement st = connection.createStatement();
-//			System.out.println(st);
-//
-//			// B3: thuc thi cau lenh SQL
-//			ResultSet resultSet = st.executeQuery(sql);
-//
-//			// B4: Xu ly du lieu (ResultSet -> your data)
-//			while (resultSet.next()) {
-//				String customerID = resultSet.getString("customerid");
-//				String userName = resultSet.getString("username");
-//				String password = resultSet.getString("password");
-//				String fullName = resultSet.getString("fullname");
-//				String sex = resultSet.getString("sex");
-//				String dob = resultSet.getString("dob");
-//				String phone = resultSet.getString("phone");
-//				String email = resultSet.getString("email");
-//				boolean registeredNotification = resultSet.getBoolean("registerednotification");
-//				String address = resultSet.getString("address");
-//
-//				customer = new Customer(
-//						 customerID,  userName,  password,  fullName,  sex,  dob,
-//						 phone,  email,  registeredNotification,  address);
-//				
-//				break;
-//			}
-//
-//			// B5: Ngat ket noi
-//			JDBCUtil.closeConnection(connection);
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//		}
-//		return customer;
-//	}
+	public Customer getVerificationCode(String customerID) {
+		Customer customer = null;
+		try {
+			// B1: Tao ket noi den CSDL
+			Connection connection = JDBCUtil.getConnection();
+
+			// B2: tao doi tuong statement
+			// Kiểm tra mã code phải là null, nếu nó không là null thì chưa xác thực
+			String sql = "SELECT *  FROM customer WHERE customerid=\"" + customerID + "\"";
+//			String sql = "SELECT * FROM customer WHERE username=? AND verificationcode=?";
+			Statement st = connection.createStatement();
+//			PreparedStatement st = connection.prepareStatement(sql);
+//			st.setString(1, username);
+//			st.setString(2, null);
+			System.out.println(sql);
+
+			// B3: thuc thi cau lenh SQL
+			ResultSet resultSet = st.executeQuery(sql);
+
+			// B4: Xu ly du lieu (ResultSet -> your data)
+			while (resultSet.next()) {
+				customer = new Customer();
+				customer.setCustomerID(customerID);
+				customer.setUsername(resultSet.getString("username"));
+				customer.setVerficationCode(resultSet.getString("verificationcode"));
+				customer.setCodeExpiredTime(resultSet.getString("codeexpiredtime"));
+				break;
+			}
+
+			// B5: Ngat ket noi
+			JDBCUtil.closeConnection(connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return customer;
+	}
+
+	public int verifyAccount(String customerID) {
+		int result = 0;
+		try {
+			Connection connection = JDBCUtil.getConnection();
+
+			String sql = "UPDATE Customer SET verificationcode = NULL, codeexpiredtime = NULL WHERE customerid=?";
+			PreparedStatement st = connection.prepareStatement(sql);
+			st.setString(1, customerID);
+			System.out.println(sql);
+			
+			result = st.executeUpdate();
+
+			JDBCUtil.closeConnection(connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public Customer createNewVerificationCode(String customerID) {
+		Customer customer = null;
+		try {
+			Connection connection = JDBCUtil.getConnection();
+
+			// todo: update here
+			// Generate code and expired time
+			String newCode = MyRandom.randomVerificationCode(16);
+			int timeToAdd =2; // hours
+			Date todaysDate = new Date(new java.util.Date().getTime());
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(todaysDate);
+			calendar.add(Calendar.DATE, timeToAdd);
+			Date codeExpiredTime = new Date(calendar.getTimeInMillis());
+			
+			// Execute query
+			String sql = "UPDATE customer SET verificationcode = ?, codeexpiredtime = ? WHERE customerid = ?";
+			PreparedStatement st = connection.prepareStatement(sql);
+			st.setString(1, newCode);
+			st.setDate(2,  codeExpiredTime);
+			st.setString(3, customerID);
+						
+			int result = st.executeUpdate();
+			if(result > 0 ) {
+				customer = selectById(customerID);
+			}
+
+			JDBCUtil.closeConnection(connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return customer;
+	}
+
 
 //	public static void main(String[] args) {
 //		CustomerDAO customerDao = new CustomerDAO();
+//		int result = customerDao.createNewVerificationCode("0d2a1707-15a3-4a94-bfd8-03117586c6a2");
+//		System.out.println(result);
 //
-//		System.out.println(customerDao.selectById("0d2a1707-15a3-4a94-bfd8-03117586c6a2"));
 //	}
 
 }
